@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#030712">
+<title>Cybersecurity Zero → Pro 4K Glass Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark: #030712;
+  --glass-panel: rgba(15, 23, 42, 0.55);
+  --glass-panel-hover: rgba(30, 41, 59, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-glow: rgba(99, 102, 241, 0.35);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  --cyan-glow: #06b6d4;
+  --purple-glow: #8b5cf6;
+  --pink-glow: #ec4899;
+  --green-glow: #10b981;
+  --blue-glow: #3b82f6;
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --shadow-4k: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 4K Glass Ambient Background Orbs */
+.bg-glow-container {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.28;
+  animation: floatOrb 18s ease-in-out infinite alternate;
+}
+.orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--purple-glow); }
+.orb-2 { top: 40%; right: -15%; width: 45vw; height: 45vw; background: var(--cyan-glow); animation-delay: -5s; }
+.orb-3 { bottom: -10%; left: 20%; width: 55vw; height: 55vw; background: var(--blue-glow); animation-delay: -10s; }
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(60px, 40px) scale(1.1); }
+}
+
+/* Grid Overlay */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: -1;
+}
+
+.app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 24px 140px;
+}
+
+/* Glass Utility Classes */
+.glass-card {
+  background: var(--glass-panel);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-4k);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-card:hover {
+  border-color: var(--glass-border-glow);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(6, 182, 212, 0.15);
+}
+
+/* Hero Section */
+.hero {
+  padding: 32px 10px 24px;
+  text-align: left;
+}
+.badge-pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 99px;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: var(--cyan-glow);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.badge-pro::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--cyan-glow);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 30%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+.hero p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  max-width: 800px;
+}
+
+/* Stats Section */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 28px 0;
+}
+.stat-card {
+  padding: 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--cyan-glow), var(--purple-glow));
+  opacity: 0.7;
+}
+.stat-card b {
+  display: block;
+  font-size: 2.2rem;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--text-main);
+}
+.stat-card span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Sticky Toolbar */
+.toolbar {
+  position: sticky;
+  top: 16px;
+  z-index: 50;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  margin: 24px 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+.search-input {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  border-radius: 12px;
+  padding: 12px 16px;
+  outline: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+.search-input:focus {
+  border-color: var(--cyan-glow);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+}
+.btn {
+  border: 1px solid var(--glass-border);
+  background: rgba(30, 41, 59, 0.8);
+  color: var(--text-main);
+  border-radius: 12px;
+  padding: 0 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+.btn-reset {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.2);
+}
+.btn-reset:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #f87171;
+}
+
+/* Progress Section */
+.progress-wrap {
+  margin: 28px 0 36px;
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.progress-bar-bg {
+  height: 12px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2px;
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cyan-glow), var(--purple-glow), var(--pink-glow));
+  border-radius: 99px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 15px var(--cyan-glow);
+}
+
+/* Panels */
+.panel {
+  padding: 28px;
+  margin: 28px 0;
+}
+.panel-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Checkpoints Grid */
+.checkpoints-grid {
+  display: grid;
+  gap: 12px;
+}
+.checkpoint-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+.cp-badge {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border-radius: 12px;
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--cyan-glow);
+  font-weight: 800;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.checkpoint-item b { display: block; font-size: 1rem; color: var(--text-main); }
+.checkpoint-item span { color: var(--text-muted); font-size: 0.85rem; }
+
+/* Recommended Order Grid */
+.order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.order-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.order-card:hover {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.order-num {
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.custom-checkbox {
+  width: 20px; height: 20px;
+  accent-color: var(--cyan-glow);
+  cursor: pointer;
+}
+.order-card label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+/* Phase List */
+.phase-list {
+  display: grid;
+  gap: 20px;
+}
+.phase-card {
+  overflow: hidden;
+}
+.phase-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.7));
+  border-bottom: 1px solid var(--glass-border);
+}
+.phase-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.phase-no {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--cyan-glow);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+.phase-head h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.phase-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.yt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  color: #fca5a5;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.yt-link:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+.done-toggle-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: rgba(30, 41, 59, 0.8);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+.done-toggle-btn:hover {
+  border-color: var(--green-glow);
+  color: var(--green-glow);
+}
+.phase-card.complete .done-toggle-btn {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--green-glow);
+  color: var(--green-glow);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.phase-body {
+  padding: 24px;
+}
+.phase-check-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.phase-body h3 {
+  font-size: 1rem;
+  color: var(--cyan-glow);
+  margin: 20px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.phase-body h4 {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  margin: 14px 0 8px;
+}
+.phase-body ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  margin: 10px 0 18px;
+}
+.phase-body li {
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.phase-body li::before {
+  content: "•";
+  color: var(--cyan-glow);
+  font-weight: bold;
+}
+
+.tip-box {
+  padding: 20px 24px;
+  margin: 30px 0;
+  border-left: 4px solid var(--cyan-glow);
+  background: rgba(6, 182, 212, 0.05);
+}
+
+.footer {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: 50px;
+  padding: 20px;
+}
+
+.hidden { display: none !important; }
+
+@media(max-width: 768px) {
+  .app { padding: 20px 14px 100px; }
+  .toolbar { flex-direction: column; }
+  .order-grid { grid-template-columns: 1fr; }
+  .phase-head { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .phase-actions { width: 100%; justify-content: space-between; }
+  .phase-body ul { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow-container">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+</div>
+<div class="bg-grid"></div>
+
+<main class="app">
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="badge-pro">Personal Cybersecurity Tracker • 4K Edition</div>
+    <h1>Zero → Pro Roadmap</h1>
+    <p>Master Cyber Security step-by-step: Networking, Linux, Active Directory, SOC, SIEM, Forensics, Cloud, and Architecture with English video courses and progress syncing.</p>
+  </header>
+
+  <!-- Stats Grid -->
+  <section class="stats-grid">
+    <div class="stat-card glass-card">
+      <b id="pct">0%</b>
+      <span>Overall Progress</span>
+    </div>
+    <div class="stat-card glass-card">
+      <b id="done">0 / 28</b>
+      <span>Recommended Stops</span>
+    </div>
+    <div class="stat-card glass-card">
+      <b id="phaseDone">0 / 24</b>
+      <span>Detailed Phases</span>
+    </div>
+  </section>
+
+  <!-- Sticky Controls Bar -->
+  <div class="toolbar">
+    <input class="search-input" id="search" placeholder="🔍 Search topics, Wazuh, Linux, Python, Splunk..." aria-label="Search roadmap">
+    <button class="btn btn-reset" id="reset" title="Reset all progress">↺ Reset</button>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span>Roadmap Completion Rate</span>
+      <span id="barText">0%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="bar"></div>
+    </div>
+  </div>
+
+  <!-- Career Checkpoints -->
+  <section class="panel glass-card">
+    <h2 class="panel-title">🎯 Career Checkpoints</h2>
+    <div class="checkpoints-grid">
+      <div class="checkpoint-item">
+        <div class="cp-badge">1</div>
+        <div>
+          <b>IT Support / Network Support</b>
+          <span>Networking + Linux + Windows Fundamentals</span>
+        </div>
+      </div>
+      <div class="checkpoint-item">
+        <div class="cp-badge">2</div>
+        <div>
+          <b>SOC Analyst L1</b>
+          <span>Networking + Windows + Linux + SIEM + Logs + MITRE + Basic IR</span>
+        </div>
+      </div>
+      <div class="checkpoint-item">
+        <div class="cp-badge">3</div>
+        <div>
+          <b>SOC Analyst L2</b>
+          <span>Threat Hunting + EDR + Active Directory + Malware + Forensics</span>
+        </div>
+      </div>
+      <div class="checkpoint-item">
+        <div class="cp-badge">4</div>
+        <div>
+          <b>SOC L3 / Detection Engineer</b>
+          <span>Advanced Detection + Threat Hunting + Automation + Cloud</span>
+        </div>
+      </div>
+      <div class="checkpoint-item">
+        <div class="cp-badge">5</div>
+        <div>
+          <b>Security Engineer / Architect</b>
+          <span>Cloud + Zero Trust + IAM + Architecture + DevSecOps</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recommended Order -->
+  <section class="panel glass-card">
+    <h2 class="panel-title">🗺️ Recommended Order</h2>
+    <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 0.9rem;">
+      Build bulletproof foundations first. Don't leap straight to Kali Linux hacking tools without OS and network mastery.
+    </p>
+    <div class="order-grid" id="orderGrid"></div>
+  </section>
+
+  <!-- Tips -->
+  <div class="tip-box glass-card">
+    <strong style="color: var(--cyan-glow);">💡 Investigator Mindset:</strong> Don't become a tool collector. Focus on connecting <code>packet → log → IOC → TTP → conclusion → escalation</code>. Only test offensive tools on lab environments or authorized scope.
+  </div>
+
+  <!-- Detailed Phases -->
+  <h2 style="font-size: 1.6rem; margin: 32px 0 16px; font-weight: 800;">📚 Detailed Learning Phases</h2>
+  
+  <section class="phase-list" id="phasesContainer"></section>
+
+  <footer class="footer">
+    Progress is automatically saved in your browser's LocalStorage. Cyber Security Zero to Pro Glassy 4K Edition.
+  </footer>
+</main>
+
+<script>
+// Master Data Definition
+const ORDER_ITEMS = [
+  "Computer Fundamentals", "Networking", "Linux", "Windows", "PowerShell",
+  "Active Directory", "Cybersecurity Fundamentals", "Wireshark", "Nmap",
+  "SOC Fundamentals", "Wazuh", "Splunk", "Windows Logs + Sysmon",
+  "MITRE ATT&CK", "Threat Intelligence", "Incident Response", "Python",
+  "pfSense", "Suricata", "Zeek", "Forensics", "Vulnerability Management",
+  "Web Security", "Offensive Security", "Cloud Security", "Detection Engineering",
+  "DevSecOps", "Security Architecture"
+];
+
+const PHASES_DATA = [
+  {
+    num: 1, title: "Networking Fundamentals",
+    yt: "https://www.youtube.com/results?search_query=freecodecamp+networking+course+english",
+    desc: "Your foundational bedrock for all cyber domains.",
+    sections: [
+      { title: "Core Concepts", items: ["OSI & TCP/IP Models", "Ethernet & MAC Addresses", "IPv4 & IPv6 Subnetting", "CIDR Notation", "Default Gateway & ARP", "DNS, DHCP & NAT", "Routing & Switching", "VLANs & VPNs", "Firewalls & Proxies"] },
+      { title: "Essential Protocols", items: ["Ethernet (L2)", "ARP (IP → MAC)", "ICMP (Ping)", "TCP & UDP Transport", "HTTP / HTTPS", "SSH & SFTP", "SMTP & IMAP", "SMB & LDAP", "Kerberos", "DNS & NTP"] }
+    ]
+  },
+  {
+    num: 2, title: "Linux Administration & Security",
+    yt: "https://www.youtube.com/results?search_query=linux+for+beginners+course+english",
+    desc: "You cannot excel in cybersecurity without deep Linux fluency.",
+    sections: [
+      { title: "Linux Essentials", items: ["Linux Filesystem Hierarchy", "Permissions & Chmod", "Users & Group Management", "Process Management", "Systemd & Services", "SSH Configuration", "Cron Jobs", "Bash Shell Scripting", "Package Managers (apt/yum)"] }
+    ]
+  },
+  {
+    num: 3, title: "Windows Security Fundamentals",
+    yt: "https://www.youtube.com/results?search_query=windows+security+fundamentals+course+english",
+    desc: "Understand enterprise operating system internals and logging.",
+    sections: [
+      { title: "Windows Internals", items: ["Windows Architecture", "Processes & Services", "Registry Mechanics", "Event Viewer Logs", "Windows Defender & Firewall", "NTFS Permissions & UAC", "Sysinternals Tools", "Procmon & Procexp"] }
+    ]
+  },
+  {
+    num: 4, title: "Active Directory & Enterprise Security",
+    yt: "https://www.youtube.com/results?search_query=active+directory+basics+course+english",
+    desc: "Crucial for understanding enterprise corporate networks and attacks.",
+    sections: [
+      { title: "AD Concepts & Tools", items: ["Users & Group Policy (GPO)", "Domain Controllers", "BloodHound / SharpHound", "Impacket Suite", "Kerberoasting & AS-REP Roasting", "Pass-the-Hash / Ticket", "Privilege Escalation"] }
+    ]
+  },
+  {
+    num: 5, title: "Cybersecurity Core Principles",
+    yt: "https://www.youtube.com/results?search_query=comptia+security%2B+full+course+english",
+    desc: "Security concepts, threat models, and risk frameworks.",
+    sections: [
+      { title: "Concepts & Frameworks", items: ["CIA Triad", "Threats vs Vulnerabilities vs Risk", "IOCs, IOAs & TTPs", "MITRE ATT&CK Framework", "Cyber Kill Chain", "NIST CSF & Incident Response", "OWASP Top 10"] }
+    ]
+  },
+  {
+    num: 6, title: "SOC Analyst Operations",
+    yt: "https://www.youtube.com/results?search_query=soc+analyst+training+course+english",
+    desc: "Day-to-day security operations center workflows.",
+    sections: [
+      { title: "Analyst Workflow", items: ["Alert Triage & Investigation", "IOC Analysis", "IP, Domain & Hash Analysis", "Phishing Alert Investigation", "Brute Force Alerts", "Suspicious PowerShell Analysis"] }
+    ]
+  },
+  {
+    num: 7, title: "SIEM Platforms (Wazuh & Splunk)",
+    yt: "https://www.youtube.com/results?search_query=wazuh+siem+tutorial+english",
+    desc: "Centralized log analysis and detection rule engine.",
+    sections: [
+      { title: "SIEM Systems", items: ["Wazuh Agent & Manager Setup", "Custom Wazuh Rules & Decoders", "Splunk SPL Searching", "Splunk Dashboards & Alerts", "Microsoft Sentinel", "Log Correlation Engine"] }
+    ]
+  },
+  {
+    num: 8, title: "Log Analysis & Event Investigation",
+    yt: "https://www.youtube.com/results?search_query=windows+event+log+analysis+cybersecurity+english",
+    desc: "Interpret raw log telemetry to reconstruct attacks.",
+    sections: [
+      { title: "Windows Event IDs", items: ["4624 (Logon Success)", "4625 (Logon Failure)", "4688 (Process Creation)", "4720 (User Created)", "4768/4769 (Kerberos)", "7045 (Service Created)"] }
+    ]
+  },
+  {
+    num: 9, title: "Endpoint Detection & Response (EDR)",
+    yt: "https://www.youtube.com/results?search_query=sysmon+cybersecurity+tutorial+english",
+    desc: "Endpoint telemetry and process execution monitoring.",
+    sections: [
+      { title: "EDR & Sysmon", items: ["Endpoint Telemetry", "Parent/Child Process Trees", "Sysmon Event Configs", "Microsoft Defender for Endpoint", "CrowdStrike & SentinelOne Basics"] }
+    ]
+  },
+  {
+    num: 10, title: "Threat Intelligence (CTI)",
+    yt: "https://www.youtube.com/results?search_query=cyber+threat+intelligence+course+english",
+    desc: "Contextualize threats and track adversary techniques.",
+    sections: [
+      { title: "Threat Intel Tools", items: ["VirusTotal Analysis", "AbuseIPDB & URLhaus", "MalwareBazaar & OTX", "Shodan & Censys", "GreyNoise Intelligence"] }
+    ]
+  },
+  {
+    num: 11, title: "Incident Response (IR)",
+    yt: "https://www.youtube.com/results?search_query=incident+response+cybersecurity+course+english",
+    desc: "Containment, eradication, and post-incident investigation.",
+    sections: [
+      { title: "IR Toolkit", items: ["Velociraptor IR", "KAPE Artifact Collector", "FTK Imager", "Wireshark Packet Analysis", "Chainsaw Log Parser"] }
+    ]
+  },
+  {
+    num: 12, title: "Digital Forensics (DFIR)",
+    yt: "https://www.youtube.com/results?search_query=digital+forensics+course+english",
+    desc: "Deep disk and volatile memory forensics.",
+    sections: [
+      { title: "Forensics Domains", items: ["Autopsy Disk Analysis", "Timeline Analysis", "Registry & Browser Artifacts", "Volatility Memory Forensics", "RAM Acquisition"] }
+    ]
+  },
+  {
+    num: 13, title: "Malware Analysis",
+    yt: "https://www.youtube.com/results?search_query=malware+analysis+for+beginners+english",
+    desc: "Analyze malicious binaries safely in isolated labs.",
+    sections: [
+      { title: "Analysis Tiers", items: ["Static Analysis (Strings/PE)", "Dynamic Analysis (Procmon)", "Ghidra Reverse Engineering", "x64dbg & CAPA", "Sandbox Detonation"] }
+    ]
+  },
+  {
+    num: 14, title: "Network Security & Defense",
+    yt: "https://www.youtube.com/results?search_query=pfsense+suricata+tutorial+english",
+    desc: "Firewalls, Intrusion Detection, and network segmentation.",
+    sections: [
+      { title: "Network Defense", items: ["pfSense Firewall", "Suricata IDS/IPS Rules", "Zeek Network Telemetry", "WAF & Reverse Proxies", "Zero Trust Architecture"] }
+    ]
+  },
+  {
+    num: 15, title: "Vulnerability Management",
+    yt: "https://www.youtube.com/results?search_query=nessus+vulnerability+scanner+tutorial+english",
+    desc: "Identify, prioritize, and remediate security vulnerabilities.",
+    sections: [
+      { title: "Scanning Tools", items: ["Nessus Vulnerability Scanner", "OpenVAS / Greenbone", "Nmap Scripting Engine (NSE)", "Nuclei Vulnerability Scanner", "CVSS Scoring"] }
+    ]
+  },
+  {
+    num: 16, title: "Web Application Security",
+    yt: "https://www.youtube.com/results?search_query=web+application+security+course+english",
+    desc: "Web protocol vulnerabilities and OWASP vulnerabilities.",
+    sections: [
+      { title: "Web Security", items: ["OWASP Top 10", "Burp Suite Proxy", "SQL Injection & XSS", "Broken Access Control", "CSRF & SSRF"] }
+    ]
+  },
+  {
+    num: 17, title: "Offensive Security & PenTesting",
+    yt: "https://www.youtube.com/results?search_query=ethical+hacking+full+course+english",
+    desc: "Understand adversary techniques to build better defenses.",
+    sections: [
+      { title: "Offensive Tools", items: ["Nmap Network Scanning", "Metasploit Framework", "Gobuster / FFuf Directory Brute", "LinPEAS & WinPEAS", "Hydra & Hashcat"] }
+    ]
+  },
+  {
+    num: 18, title: "Python for Cybersecurity",
+    yt: "https://www.youtube.com/results?search_query=python+for+cybersecurity+course+english",
+    desc: "Automate security tasks, log parsing, and API integrations.",
+    sections: [
+      { title: "Python Projects", items: ["Port Scanner Script", "VirusTotal API Parser", "Log Scraping Automation", "Scapy Packet Crafting", "Automated Threat Intel Search"] }
+    ]
+  },
+  {
+    num: 19, title: "PowerShell Scripting & Security",
+    yt: "https://www.youtube.com/results?search_query=powershell+for+cybersecurity+english",
+    desc: "Administer Windows systems and detect malicious scripts.",
+    sections: [
+      { title: "PowerShell Skills", items: ["Cmdlets & Scripting", "PowerShell Logging (ScriptBlock)", "Active Directory PowerShell Module", "Detecting Malicious Execution"] }
+    ]
+  },
+  {
+    num: 20, title: "Cloud Security (AWS & Azure)",
+    yt: "https://www.youtube.com/results?search_query=aws+cloud+security+course+english",
+    desc: "Securing cloud workloads, IAM, and cloud logging.",
+    sections: [
+      { title: "Cloud Platforms", items: ["AWS IAM & Security Groups", "AWS CloudTrail & GuardDuty", "Azure Entra ID & NSGs", "Microsoft Defender for Cloud", "Cloud Audit Logs"] }
+    ]
+  },
+  {
+    num: 21, title: "Container Security (Docker & K8s)",
+    yt: "https://www.youtube.com/results?search_query=docker+kubernetes+security+course+english",
+    desc: "Secure microservices, images, and container orchestrators.",
+    sections: [
+      { title: "Container Tools", items: ["Docker Basics & Isolation", "Trivy Container Scanner", "Falco Runtime Security", "Kubectl Security Hardening"] }
+    ]
+  },
+  {
+    num: 22, title: "DevSecOps & CI/CD Security",
+    yt: "https://www.youtube.com/results?search_query=devsecops+fundamentals+course+english",
+    desc: "Shift-left security integration into developer pipelines.",
+    sections: [
+      { title: "DevSecOps Tools", items: ["Git & CI/CD Pipelines", "Semgrep SAST Scanning", "Gitleaks Secret Scanning", "SonarQube Code Quality"] }
+    ]
+  },
+  {
+    num: 23, title: "Advanced Detection Engineering",
+    yt: "https://www.youtube.com/results?search_query=detection+engineering+course+english",
+    desc: "Author custom detection rules for production environments.",
+    sections: [
+      { title: "Rule Formats", items: ["Sigma Rules Creation", "YARA Rules for Malware", "KQL Querying (Sentinel)", "Suricata Custom Rules", "MITRE ATT&CK Mapping"] }
+    ]
+  },
+  {
+    num: 24, title: "Enterprise Security Architecture",
+    yt: "https://www.youtube.com/results?search_query=enterprise+security+architecture+english",
+    desc: "High-level strategic defense and resilient systems design.",
+    sections: [
+      { title: "Architecture Pillars", items: ["Zero Trust Architecture", "Defense in Depth Strategy", "PAM & Identity Management", "SOAR Automation", "Threat Modeling Methodologies"] }
+    ]
+  }
+];
+
+// App State Management
+const STORAGE_KEY = "cyber_roadmap_glass_4k_v2";
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"order":[],"phases":[]}');
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  renderProgress();
+}
+
+// Render Order Checklist
+function renderOrderGrid() {
+  const container = document.getElementById('orderGrid');
+  container.innerHTML = ORDER_ITEMS.map((item, index) => {
+    const isChecked = state.order.includes(index);
+    const numStr = String(index + 1).padStart(2, '0');
+    return `
+      <div class="order-card" data-order-idx="${index}">
+        <input type="checkbox" class="custom-checkbox" id="ord-${index}" ${isChecked ? 'checked' : ''}>
+        <label for="ord-${index}">
+          <span class="order-num">${numStr}</span>
+          <span>${item}</span>
+        </label>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+    chk.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.id.replace('ord-', ''), 10);
+      if (e.target.checked) {
+        if (!state.order.includes(idx)) state.order.push(idx);
+      } else {
+        state.order = state.order.filter(i => i !== idx);
+      }
+      saveState();
+    });
+  });
+}
+
+// Render Detailed Learning Phases
+function renderPhases() {
+  const container = document.getElementById('phasesContainer');
+  container.innerHTML = PHASES_DATA.map((p) => {
+    const isComplete = state.phases.includes(p.num);
+    return `
+      <article class="phase-card glass-card ${isComplete ? 'complete' : ''}" id="phase-card-${p.num}" data-phase-num="${p.num}">
+        <div class="phase-head">
+          <div class="phase-head-left">
+            <span class="phase-no">PHASE ${String(p.num).padStart(2, '0')}</span>
+            <h2>${p.title}</h2>
+          </div>
+          <div class="phase-actions">
+            <a href="${p.yt}" target="_blank" rel="noopener noreferrer" class="yt-link" title="Open YouTube English Course">
+              ▶️ English Course
+            </a>
+            <button class="done-toggle-btn" data-phase-btn="${p.num}" aria-label="Toggle Complete">
+              ✓
+            </button>
+          </div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-check-bar">
+            <input type="checkbox" class="custom-checkbox phase-checkbox" id="ph-check-${p.num}" ${isComplete ? 'checked' : ''}>
+            <label for="ph-check-${p.num}">Mark Phase ${p.num} as Completed</label>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">${p.desc}</p>
+          ${p.sections.map(sec => `
+            <h3>${sec.title}</h3>
+            <ul>
+              ${sec.items.map(it => `<li>${it}</li>`).join('')}
+            </ul>
+          `).join('')}
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  // Attach Listeners
+  PHASES_DATA.forEach(p => {
+    const chk = document.getElementById(`ph-check-${p.num}`);
+    const btn = document.querySelector(`[data-phase-btn="${p.num}"]`);
+    
+    const togglePhase = (status) => {
+      if (status) {
+        if (!state.phases.includes(p.num)) state.phases.push(p.num);
+      } else {
+        state.phases = state.phases.filter(n => n !== p.num);
+      }
+      saveState();
+      updatePhaseCardVisual(p.num);
+    };
+
+    chk.addEventListener('change', (e) => togglePhase(e.target.checked));
+    btn.addEventListener('click', () => {
+      const newStatus = !state.phases.includes(p.num);
+      chk.checked = newStatus;
+      togglePhase(newStatus);
+    });
+  });
+}
+
+function updatePhaseCardVisual(phaseNum) {
+  const card = document.getElementById(`phase-card-${phaseNum}`);
+  const isComplete = state.phases.includes(phaseNum);
+  if (card) {
+    card.classList.toggle('complete', isComplete);
+  }
+}
+
+// Calculate Progress Metrics
+function renderProgress() {
+  const orderDone = state.order.length;
+  const orderTotal = ORDER_ITEMS.length;
+  
+  const phaseDone = state.phases.length;
+  const phaseTotal = PHASES_DATA.length;
+  
+  // Weighted percentage calculation
+  const totalItems = orderTotal + phaseTotal;
+  const doneItems = orderDone + phaseDone;
+  const pct = Math.round((doneItems / totalItems) * 100) || 0;
+
+  document.getElementById('pct').textContent = `${pct}%`;
+  document.getElementById('barText').textContent = `${pct}%`;
+  document.getElementById('bar').style.width = `${pct}%`;
+  
+  document.getElementById('done').textContent = `${orderDone} / ${orderTotal}`;
+  document.getElementById('phaseDone').textContent = `${phaseDone} / ${phaseTotal}`;
+}
+
+// Search Filter
+document.getElementById('search').addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.phase-card').forEach(card => {
+    const text = card.innerText.toLowerCase();
+    card.classList.toggle('hidden', query !== '' && !text.includes(query));
+  });
+});
+
+// Reset Handler
+document.getElementById('reset').addEventListener('click', () => {
+  if (confirm("Are you sure you want to reset all saved progress?")) {
+    state = { order: [], phases: [] };
+    saveState();
+    renderOrderGrid();
+    renderPhases();
+  }
+});
+
+// Initialization
+renderOrderGrid();
+renderPhases();
+renderProgress();
+</script>
+</body>
+</html>
