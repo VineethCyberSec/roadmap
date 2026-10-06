@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes" />
+  <title>4K Glassy Media Vault</title>
+
+  <!-- External CDNs: PDF.js & FontAwesome Icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at top left, #0f172a, #1e1b4b, #020617);
+      --glass-bg: rgba(255, 255, 255, 0.07);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --card-hover: rgba(255, 255, 255, 0.12);
+      --sheet-bg: rgba(15, 23, 42, 0.85);
+    }
+
+    [data-theme="light"] {
+      --bg-gradient: radial-gradient(circle at top left, #e0e7ff, #f3e8ff, #e0f2fe);
+      --glass-bg: rgba(255, 255, 255, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.7);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --accent: #4f46e5;
+      --accent-glow: rgba(79, 70, 229, 0.25);
+      --card-hover: rgba(255, 255, 255, 0.8);
+      --sheet-bg: rgba(255, 255, 255, 0.88);
+    }
+
+    /* Reset and Disable Text Selection */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      padding-bottom: 90px; /* Space for mobile floating nav */
+      transition: background 0.4s ease, color 0.4s ease;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--glass-shadow);
+      margin-bottom: 24px;
+      position: sticky;
+      top: 12px;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand i {
+      color: var(--accent);
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px var(--accent-glow));
+    }
+
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #live-clock {
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.12);
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      white-space: nowrap;
+    }
+
+    .theme-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .theme-btn:active {
+      transform: scale(0.92);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      box-shadow: var(--glass-shadow);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    @media (hover: hover) {
+      .card:hover {
+        transform: translateY(-4px);
+        background: var(--card-hover);
+      }
+    }
+
+    .card-icon-wrapper {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-icon-wrapper i {
+      font-size: 2.2rem;
+      color: var(--accent);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+    }
+
+    .btn-action {
+      width: 100%;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px var(--accent-glow);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+      opacity: 0.9;
+    }
+
+    .btn-upload {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px dashed var(--glass-border);
+      color: var(--text-main);
+      box-shadow: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      align-items: flex-end; /* Mobile Bottom-sheet default */
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: var(--sheet-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      width: 100%;
+      max-width: 1200px;
+      height: 92vh;
+      border-radius: 28px 28px 0 0; /* Bottom Sheet shape */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+
+    /* Mobile sheet drag handle */
+    .sheet-handle {
+      width: 40px;
+      height: 5px;
+      background: var(--glass-border);
+      border-radius: 10px;
+      margin: 10px auto 4px auto;
+    }
+
+    .modal-header {
+      padding: 10px 20px 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .modal-title-box h3 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .modal-close-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      touch-action: pan-x pan-y;
+    }
+
+    /* Protection Overlay against long press / drags */
+    .shield-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      background: transparent;
+    }
+
+    /* Render Containers */
+    #pdf-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: auto;
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+    }
+
+    .media-element {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      transform-origin: center center;
+      transition: transform 0.15s ease-out;
+    }
+
+    .bottom-bar {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .control-btn:active {
+      transform: scale(0.9);
+    }
+
+    .page-indicator {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #ffffff;
+      min-width: 65px;
+      text-align: center;
+    }
+
+    /* DESKTOP RESPONSIVE ADJUSTMENTS */
+    @media (min-width: 768px) {
+      body {
+        padding: 24px;
+      }
+      .modal {
+        align-items: center;
+        padding: 24px;
+      }
+      .modal-content {
+        height: 88vh;
+        border-radius: 24px;
+        transform: scale(0.9);
+      }
+      .modal.active .modal-content {
+        transform: scale(1);
+      }
+      .sheet-handle {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <header>
+    <div class="brand">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>Vault 4K</span>
+    </div>
+    <div class="header-info">
+      <div id="live-clock">--:--:--</div>
+      <button class="theme-btn" id="theme-toggle" aria-label="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- PDF CARD -->
+    <div class="card">
+      <div class="card-icon-wrapper">
+        <i class="fa-solid fa-file-pdf"></i>
+      </div>
+      <div>
+        <h3>Ultra 4K PDF</h3>
+        <p>Dynamic High-DPI Canvas Rendering</p>
+      </div>
+      <button class="btn-action" onclick="openPdf('https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf')">
+        <i class="fa-solid fa-expand"></i> Open PDF
+      </button>
+    </div>
+
+    <!-- IMAGE CARD -->
+    <div class="card">
+      <div class="card-icon-wrapper">
+        <i class="fa-solid fa-image"></i>
+      </div>
+      <div>
+        <h3>Sample High-Res Photo</h3>
+        <p>Pinch & Zoom Touch Viewer</p>
+      </div>
+      <button class="btn-action" onclick="openImage('https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1600&auto=format&fit=crop')">
+        <i class="fa-solid fa-expand"></i> Open Photo
+      </button>
+    </div>
+
+    <!-- VIDEO CARD -->
+    <div class="card">
+      <div class="card-icon-wrapper">
+        <i class="fa-solid fa-circle-play"></i>
+      </div>
+      <div>
+        <h3>Protected Video</h3>
+        <p>Protected MP4 Media Stream</p>
+      </div>
+      <button class="btn-action" onclick="openVideo('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4')">
+        <i class="fa-solid fa-expand"></i> Watch Video
+      </button>
+    </div>
+
+    <!-- LOCAL FILE SIMULATION / PICKER CARD -->
+    <div class="card">
+      <div class="card-icon-wrapper">
+        <i class="fa-solid fa-folder-plus"></i>
+      </div>
+      <div>
+        <h3>Local File Test</h3>
+        <p>Pick PDF, Image, or Video</p>
+      </div>
+      <button class="btn-action btn-upload" onclick="document.getElementById('file-input').click()">
+        <i class="fa-solid fa-upload"></i> Choose File
+      </button>
+      <input type="file" id="file-input" style="display: none;" accept="application/pdf,image/*,video/*" onchange="handleFileSelect(event)" />
+    </div>
+
+  </main>
+
+  <div class="modal" id="viewer-modal">
+    <div class="modal-content">
+      <div class="sheet-handle"></div>
+      
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3 id="modal-title">Viewer</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" id="modal-body">
+        <div class="shield-overlay"></div>
+        <div id="pdf-container"></div>
+      </div>
+
+      <!-- ERGONOMIC FLOATING BOTTOM ACTION BAR -->
+      <div class="bottom-bar" id="floating-bar" style="display: none;">
+        <!-- PDF Nav Controls -->
+        <div id="pdf-controls" style="display: flex; align-items: center; gap: 8px;">
+          <button class="control-btn" onclick="changePage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <span class="page-indicator"><span id="page-num">1</span> / <span id="page-count">1</span></span>
+          <button class="control-btn" onclick="changePage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <!-- Zoom Controls for PDF & Images -->
+        <div id="zoom-controls" style="display: flex; align-items: center; gap: 8px;">
+          <button class="control-btn" onclick="adjustZoom(-0.25)"><i class="fa-solid fa-minus"></i></button>
+          <button class="control-btn" onclick="resetZoom()"><i class="fa-solid fa-rotate-right"></i></button>
+          <button class="control-btn" onclick="adjustZoom(0.25)"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      document.getElementById('live-clock').innerText = `${dateStr}, ${timeStr}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const themeBtn = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme_preference');
+
+    if (savedTheme === 'light') {
+      document.body.setAttribute('data-theme', 'light');
+      themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+
+    themeBtn.addEventListener('click', () => {
+      if (document.body.getAttribute('data-theme') === 'light') {
+        document.body.removeAttribute('data-theme');
+        themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+        localStorage.setItem('theme_preference', 'dark');
+      } else {
+        document.body.setAttribute('data-theme', 'light');
+        themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        localStorage.setItem('theme_preference', 'light');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (
+        e.keyCode === 123 || 
+        (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 80)) || 
+        (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74))
+      ) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    const modal = document.getElementById('viewer-modal');
+    const modalBody = document.getElementById('modal-body');
+    const modalTitle = document.getElementById('modal-title');
+    const floatingBar = document.getElementById('floating-bar');
+    const pdfControls = document.getElementById('pdf-controls');
+    const zoomControls = document.getElementById('zoom-controls');
+    const pdfContainer = document.getElementById('pdf-container');
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let currentZoom = 1.0;
+    let activeType = null;
+    let activeMediaElem = null;
+
+    function openModal() {
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      pdfContainer.innerHTML = '';
+      floatingBar.style.display = 'none';
+      pdfControls.style.display = 'none';
+      pdfDoc = null;
+      currentZoom = 1.0;
+      activeType = null;
+      activeMediaElem = null;
+    }
+
+    function updateZoomTransform() {
+      if (activeType === 'pdf') {
+        const canvas = pdfContainer.querySelector('canvas');
+        if (canvas) canvas.style.transform = `scale(${currentZoom})`;
+      } else if (activeMediaElem) {
+        activeMediaElem.style.transform = `scale(${currentZoom})`;
+      }
+    }
+
+    function adjustZoom(delta) {
+      currentZoom = Math.max(0.5, Math.min(3.5, currentZoom + delta));
+      updateZoomTransform();
+    }
+
+    function resetZoom() {
+      currentZoom = 1.0;
+      updateZoomTransform();
+    }
+
+    async function openPdf(source) {
+      openModal();
+      activeType = 'pdf';
+      modalTitle.innerText = "PDF Document (4K Clarity)";
+      floatingBar.style.display = 'flex';
+      pdfControls.style.display = 'flex';
+      zoomControls.style.display = 'flex';
+      pdfContainer.innerHTML = '';
+
+      try {
+        const loadingTask = pdfjsLib.getDocument(source);
+        pdfDoc = await loadingTask.promise;
+        document.getElementById('page-count').innerText = pdfDoc.numPages;
+        pageNum = 1;
+        renderPdfPage(pageNum);
+      } catch (err) {
+        alert("Failed to render PDF document.");
+        closeModal();
+      }
+    }
+
+    async function renderPdfPage(num) {
+      document.getElementById('page-num').innerText = num;
+      pdfContainer.innerHTML = '';
+
+      const page = await pdfDoc.getPage(num);
+      const canvas = document.createElement('canvas');
+      pdfContainer.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+
+      // 4K Ultra Quality: Dynamically calculate scale based on device pixel ratio
+      const dpr = window.devicePixelRatio || 1;
+      const targetScale = Math.max(dpr * 1.8, 2.5); // Ensure high DPI canvas buffer
+      const viewport = page.getViewport({ scale: targetScale });
+
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      // Fit scale visually on mobile screens
+      const containerWidth = pdfContainer.clientWidth - 20;
+      const cssScale = containerWidth / viewport.width;
+      canvas.style.width = `${viewport.width * cssScale}px`;
+      canvas.style.height = `${viewport.height * cssScale}px`;
+
+      updateZoomTransform();
+
+      await page.render({
+        canvasContext: ctx,
+        viewport: viewport
+      }).promise;
+    }
+
+    function changePage(delta) {
+      if (!pdfDoc) return;
+      if (pageNum + delta >= 1 && pageNum + delta <= pdfDoc.numPages) {
+        pageNum += delta;
+        renderPdfPage(pageNum);
+      }
+    }
+
+    function openImage(src) {
+      openModal();
+      activeType = 'image';
+      modalTitle.innerText = "Photo Viewer";
+      pdfContainer.innerHTML = '';
+      floatingBar.style.display = 'flex';
+      pdfControls.style.display = 'none';
+      zoomControls.style.display = 'flex';
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'media-element';
+      img.oncontextmenu = () => false;
+      activeMediaElem = img;
+      pdfContainer.appendChild(img);
+    }
+
+    function openVideo(src) {
+      openModal();
+      activeType = 'video';
+      modalTitle.innerText = "Protected Video Player";
+      pdfContainer.innerHTML = '';
+      floatingBar.style.display = 'none';
+
+      const video = document.createElement('video');
+      video.src = src;
+      video.className = 'media-element';
+      video.controls = true;
+      video.autoplay = true;
+      video.controlsList = "nodownload noplaybackrate";
+      video.disablePictureInPicture = true;
+      video.oncontextmenu = () => false;
+      activeMediaElem = video;
+      pdfContainer.appendChild(video);
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const fileUrl = URL.createObjectURL(file);
+      if (file.type === 'application/pdf') {
+        openPdf(fileUrl);
+      } else if (file.type.startsWith('image/')) {
+        openImage(fileUrl);
+      } else if (file.type.startsWith('video/')) {
+        openVideo(fileUrl);
+      } else {
+        alert("Unsupported file format.");
+      }
+    }
+
+    let initialTouchDist = 0;
+
+    pdfContainer.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        initialTouchDist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+      }
+    }, { passive: true });
+
+    pdfContainer.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && initialTouchDist > 0) {
+        const currentDist = Math.hypot(
+          e.touches[0].pageX - e.touches[1].pageX,
+          e.touches[0].pageY - e.touches[1].pageY
+        );
+        const diff = (currentDist - initialTouchDist) / 200;
+        adjustZoom(diff);
+        initialTouchDist = currentDist;
+      }
+    }, { passive: true });
+
+    pdfContainer.addEventListener('touchend', () => {
+      initialTouchDist = 0;
+    });
+  </script>
+</body>
+</html>
