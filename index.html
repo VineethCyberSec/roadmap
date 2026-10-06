@@ -60,7 +60,7 @@
       flex-direction: column;
       align-items: center;
       padding: 16px;
-      padding-bottom: 90px; /* Space for mobile floating nav */
+      padding-bottom: 90px;
       transition: background 0.4s ease, color 0.4s ease;
       overflow-x: hidden;
     }
@@ -229,7 +229,7 @@
       background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      align-items: flex-end; /* Mobile Bottom-sheet default */
+      align-items: flex-end;
       justify-content: center;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -248,7 +248,7 @@
       width: 100%;
       max-width: 1200px;
       height: 92vh;
-      border-radius: 28px 28px 0 0; /* Bottom Sheet shape */
+      border-radius: 28px 28px 0 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -262,7 +262,6 @@
       transform: translateY(0);
     }
 
-    /* Mobile sheet drag handle */
     .sheet-handle {
       width: 40px;
       height: 5px;
@@ -310,7 +309,6 @@
       touch-action: pan-x pan-y;
     }
 
-    /* Protection Overlay against long press / drags */
     .shield-overlay {
       position: absolute;
       inset: 0;
@@ -318,7 +316,6 @@
       background: transparent;
     }
 
-    /* Render Containers */
     #pdf-container {
       width: 100%;
       height: 100%;
@@ -391,7 +388,6 @@
       text-align: center;
     }
 
-    /* DESKTOP RESPONSIVE ADJUSTMENTS */
     @media (min-width: 768px) {
       body {
         padding: 24px;
@@ -431,17 +427,18 @@
 
   <main class="container">
 
-    <!-- PDF CARD -->
+    <!-- PDF CARD 1 (PDF Folder Source) -->
     <div class="card">
       <div class="card-icon-wrapper">
         <i class="fa-solid fa-file-pdf"></i>
       </div>
       <div>
-        <h3>Ultra 4K PDF</h3>
-        <p>Dynamic High-DPI Canvas Rendering</p>
+        <h3>Repository PDF</h3>
+        <p>Loaded from GitHub <code>pdf/document.pdf</code></p>
       </div>
-      <button class="btn-action" onclick="openPdf('https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf')">
-        <i class="fa-solid fa-expand"></i> Open PDF
+      <!-- Ensure your PDF file is inside the 'pdf/' folder in your repository -->
+      <button class="btn-action" onclick="openPdf('pdf/document.pdf')">
+        <i class="fa-solid fa-expand"></i> Open PDF 1
       </button>
     </div>
 
@@ -473,7 +470,7 @@
       </button>
     </div>
 
-    <!-- LOCAL FILE SIMULATION / PICKER CARD -->
+    <!-- LOCAL FILE PICKER CARD -->
     <div class="card">
       <div class="card-icon-wrapper">
         <i class="fa-solid fa-folder-plus"></i>
@@ -508,7 +505,7 @@
         <div id="pdf-container"></div>
       </div>
 
-      <!-- ERGONOMIC FLOATING BOTTOM ACTION BAR -->
+      <!-- FLOATING ACTION BAR -->
       <div class="bottom-bar" id="floating-bar" style="display: none;">
         <!-- PDF Nav Controls -->
         <div id="pdf-controls" style="display: flex; align-items: center; gap: 8px;">
@@ -632,7 +629,7 @@
         pageNum = 1;
         renderPdfPage(pageNum);
       } catch (err) {
-        alert("Failed to render PDF document.");
+        alert("Failed to render PDF document. Please verify that the file exists in the specified folder path.");
         closeModal();
       }
     }
@@ -646,15 +643,13 @@
       pdfContainer.appendChild(canvas);
       const ctx = canvas.getContext('2d');
 
-      // 4K Ultra Quality: Dynamically calculate scale based on device pixel ratio
       const dpr = window.devicePixelRatio || 1;
-      const targetScale = Math.max(dpr * 1.8, 2.5); // Ensure high DPI canvas buffer
+      const targetScale = Math.max(dpr * 1.8, 2.5);
       const viewport = page.getViewport({ scale: targetScale });
 
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
-      // Fit scale visually on mobile screens
       const containerWidth = pdfContainer.clientWidth - 20;
       const cssScale = containerWidth / viewport.width;
       canvas.style.width = `${viewport.width * cssScale}px`;
